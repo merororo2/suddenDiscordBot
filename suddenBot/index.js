@@ -172,7 +172,7 @@ client.on("messageCreate", async (message) => {
   if (message.content.startsWith("!전적 ")) {
     const args = message.content.split(" ");
     if (args.length < 2) {
-      return message.reply("⚠️ 사용법: `!전적 닉네임 [게임모드]`");
+      return message.reply("⚠️ 사용법: `!전적 닉네임`");
     }
 
     const suddenName = args[1]; // 닉네임
