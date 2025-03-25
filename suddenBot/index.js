@@ -128,7 +128,7 @@ async function fetchSuddenAttackStats(suddenName) {
         {
           name: "🕹 **최근 동향**",
           value:
-            `최근 승률: ${recent.recent_win_rate || "N/A"}%\n` +
+            `최근 승률: ${recent.recent_win_rate || "0"}%\n` +
             `최근 킬데스: ${
               recent.recent_kill_death_rate
                 ? recent.recent_kill_death_rate.toFixed(1) + "%"
