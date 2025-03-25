@@ -26,8 +26,8 @@
 
 1. **프로젝트 클론**:
     ```bash
-    git clone https://github.com/your-username/sudden-attack-bot.git
-    cd sudden-attack-bot
+    git clone https://github.com/merororo2/suddenDiscordBot.git
+    cd suddenDiscordBot
     ```
 
 2. **필요한 패키지 설치**:
@@ -52,7 +52,7 @@
 
 ## 🔗 링크
 
-- [GitHub Repository](https://github.com/your-username/sudden-attack-bot)
+- [GitHub Repository](https://github.com/merororo2/suddenDiscordBot)
 - [Nexon Open API Documentation](https://developers.nexon.com/)
 
 ## 추후 추가 할 기능
