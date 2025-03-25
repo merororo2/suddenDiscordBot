@@ -53,7 +53,11 @@
 ## 🔗 링크
 
 - [GitHub Repository](https://github.com/merororo2/suddenDiscordBot)
-- [Nexon Open API Documentation](https://developers.nexon.com/)
+- [Nexon Open API Documentation](https://openapi.nexon.com/ko/)
 
 ## 추후 추가 할 기능
 - 매칭 유형별 검색 추가
+
+
+## 수정사항
+ - Nexon Open APi 사이트로 이동되지않아 주소 수정
