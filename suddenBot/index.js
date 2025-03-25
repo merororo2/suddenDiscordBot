@@ -18,7 +18,7 @@ client.once(Events.ClientReady, (readyClient) => {
   console.log(`✅ Logged in as ${readyClient.user.tag}`);
 });
 
-async function fetchSuddenAttackStats(suddenName, gameMode) {
+async function fetchSuddenAttackStats(suddenName) {
   try {
     const urlString = `https://open.api.nexon.com/suddenattack/v1/id?user_name=${encodeURIComponent(
       suddenName
@@ -35,7 +35,6 @@ async function fetchSuddenAttackStats(suddenName, gameMode) {
 
     const ouid = data.ouid;
     console.log(`✅ ${suddenName}의 OUID:`, ouid);
-    console.log(`✅ ${suddenName}의 Mode:`, gameMode);
 
     // 여러 API 호출 (basic, rank, recent-info, match)
     const endpoints = [
@@ -50,17 +49,17 @@ async function fetchSuddenAttackStats(suddenName, gameMode) {
         url: `https://open.api.nexon.com/suddenattack/v1/user/rank?ouid=${ouid}`,
       },
       {
-        name: "최근 전적",
+        name: "최근 동향",
         key: "recent",
         url: `https://open.api.nexon.com/suddenattack/v1/user/recent-info?ouid=${ouid}`,
       },
-      {
-        name: "매치 정보",
-        key: "match",
-        url: `https://open.api.nexon.com/suddenattack/v1/match?ouid=${ouid}&match_mode=${encodeURIComponent(
-          gameMode
-        )}`,
-      },
+      // {
+      //   name: "매치 정보",
+      //   key: "match",
+      //   url: `https://open.api.nexon.com/suddenattack/v1/match?ouid=${ouid}&match_mode=${encodeURIComponent(
+      //     gameMode
+      //   )}`,
+      // },
       {
         name: "티어 정보",
         key: "tier",
@@ -82,8 +81,6 @@ async function fetchSuddenAttackStats(suddenName, gameMode) {
       }
     }
 
-    console.log("result => {}", results);
-
     // 데이터 가공
     const basic = results.basic || {};
     const rank = results.rank || {};
@@ -92,15 +89,15 @@ async function fetchSuddenAttackStats(suddenName, gameMode) {
     const match =
       results.match && results.match.match && results.match.match.length > 0
         ? results.match.match[0]
-        : null; // match.match 배열을 확인하고 첫 번째 항목 가져옴
-
-    console.log("Match Data:", match);
+        : null;
 
     const embed = new EmbedBuilder()
-      .setColor("#ff6600") // 밝은 주황색으로 강조
+      .setColor("#ff6600")
       .setTitle(`⚡ **${suddenName}의 전적 정보** ⚡`)
-      .setThumbnail("https://example.com/avatar.png") // 사용자 아바타 넣기
-      .setDescription(`**게임 모드**: ${gameMode} | **닉네임**: ${suddenName}`)
+      .setThumbnail(
+        "https://i.namu.wiki/i/1mH8Ae0cQRPdbxclfEKND_8aa6kpn86MSBYiJK7_Coh362VMvgbgyDCSm8H2raru-33_SnZ0xa6oK-tMbnQT3g.webp"
+      )
+      .setDescription(`**게임 모드**: 개발중 | **닉네임**: ${suddenName}`)
       .addFields(
         {
           name: "📌 **기본 정보**",
@@ -108,7 +105,7 @@ async function fetchSuddenAttackStats(suddenName, gameMode) {
             `닉네임: ${basic.user_name || "N/A"}\n` +
             `소속 클랜: ${basic.clan_name || "N/A"}\n` +
             `매너 등급: ${basic.manner_grade || "N/A"}`,
-          inline: true, // 인라인으로 배치
+          inline: true,
         },
         {
           name: "🏅 **티어 정보**",
@@ -131,22 +128,34 @@ async function fetchSuddenAttackStats(suddenName, gameMode) {
         {
           name: "🕹 **최근 동향**",
           value:
-            `최근 승률: ${recent.recent_win_rate || "N/A"}\n` +
+            `최근 승률: ${recent.recent_win_rate || "N/A"}%\n` +
             `최근 킬데스: ${
               recent.recent_kill_death_rate
-                ? recent.recent_kill_death_rate + "%"
+                ? recent.recent_kill_death_rate.toFixed(1) + "%"
                 : "N/A"
             }\n` +
-            `최근 돌격소총 킬데스: ${recent.recent_assault_rate || "N/A"}%\n` +
-            `최근 저격소총 킬데스: ${recent.recent_sniper_rate || "N/A"}%\n` +
-            `최근 특수총 킬데스: ${recent.recent_special_rate || "N/A"}%`,
+            `최근 돌격소총 킬데스: ${
+              recent.recent_assault_rate
+                ? recent.recent_assault_rate.toFixed(1) + "%"
+                : "N/A"
+            }\n` +
+            `최근 저격소총 킬데스: ${
+              recent.recent_sniper_rate
+                ? recent.recent_sniper_rate.toFixed(1) + "%"
+                : "N/A"
+            }\n` +
+            `최근 특수총 킬데스: ${
+              recent.recent_special_rate
+                ? recent.recent_special_rate.toFixed(1) + "%"
+                : "N/A"
+            }%`,
+
           inline: true,
         }
       )
       .setFooter({
         text: "Sudden Attack Stats 🔥",
-        iconURL: "https://example.com/footer-icon.png",
-      }) // 푸터에 아이콘 추가
+      })
       .setTimestamp();
 
     return { embeds: [embed] };
@@ -167,10 +176,10 @@ client.on("messageCreate", async (message) => {
     }
 
     const suddenName = args[1]; // 닉네임
-    const gameMode = args[2] || "폭파미션"; // 기본값: 폭파미션
+    // const gameMode = args[2] || "폭파미션"; // 기본값: 폭파미션
     message.reply(`⏳ **${suddenName}**의 전적을 조회하는 중...`);
 
-    const result = await fetchSuddenAttackStats(suddenName, gameMode);
+    const result = await fetchSuddenAttackStats(suddenName);
     message.reply(result);
   }
 });
