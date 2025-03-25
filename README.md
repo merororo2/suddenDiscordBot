@@ -19,6 +19,7 @@
 3. **출력 예시**:
     - 전적 조회 결과는 디스코드 Embed 메시지 형태로 제공됩니다.
     - 결과에는 기본 정보, 티어 정보, 계급 정보, 최근 동향 등의 정보가 포함됩니다.
+    - ![image](https://github.com/user-attachments/assets/ff0248ce-cafd-4b99-910a-db5e5887608d)
 
 ## 🔧 설치
 
