@@ -61,7 +61,6 @@
     ```
 
 ## 🔗 링크
-
 - [GitHub Repository](https://github.com/merororo2/suddenDiscordBot)
 - [Nexon Open API Documentation](https://openapi.nexon.com/ko/)
 
@@ -70,10 +69,12 @@
 - 추후 매치 목록 추가 예정 (ex: 최근 매치 기준 20판)
 
 ## 수정사항
- **2025-03-25**
-    - Nexon Open APi 사이트로 이동되지않아 주소 수정
-    - 매치 정보 예상치 못한 오류로 인해 제거
- **2025-03-26**
-     - 전적정보 간략하게 보이도록 수정
-     - 최근동향 prograss bar로 변경
-     - !전적에서 slash commands로 변경
+### 2025-03-25
+- Nexon Open API 사이트로 이동되지 않아 주소 수정
+- 매치 정보 예상치 못한 오류로 인해 제거
+
+### 2025-03-26
+- 전적 정보 간략하게 보이도록 수정
+- 최근 동향 progress bar로 변경
+- `!전적`에서 slash commands로 변경
+
