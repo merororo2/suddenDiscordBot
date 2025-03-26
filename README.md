@@ -20,10 +20,14 @@
     - 전적 조회 결과는 디스코드 Embed 메시지 형태로 제공됩니다.
     - 결과에는 기본 정보, 티어 정보, 계급 정보, 최근 동향 등의 정보가 포함됩니다.
    
-   **[출력 이미지]**
+   **[수정전 출력 이미지]**
      ![image](https://github.com/user-attachments/assets/8ef29c4f-07ba-407f-b403-5c5f69cf25df)
-
-
+   **[수정후 출력 이미지]**
+     ![슬래시1](https://github.com/user-attachments/assets/09e55654-a02f-4d3d-813e-a4ec239e8680)
+     ![슬래시2](https://github.com/user-attachments/assets/e5a2c6a3-98d2-410c-9035-4094ea53bae9)
+     > slash command로 변경 후 /전적으로 검색합니다
+     ![슬래시3](https://github.com/user-attachments/assets/ad584349-7d3b-4cf2-9141-8513a05bd82d)
+     > 전적정보 간략화 및 최근동향 prograss bar로 수정
 ## 🔧 설치
 
 1. **프로젝트 클론**:
@@ -62,5 +66,10 @@
 - 추후 매치 목록 추가 예정 (ex: 최근 매치 기준 20판)
 
 ## 수정사항
- - Nexon Open APi 사이트로 이동되지않아 주소 수정
- - 매치 정보 예상치 못한 오류로 인해 제거
+ **2025-03-25**
+    - Nexon Open APi 사이트로 이동되지않아 주소 수정
+    - 매치 정보 예상치 못한 오류로 인해 제거
+ **2025-03-26**
+     - 전적정보 간략하게 보이도록 수정
+     - 최근동향 prograss bar로 변경
+     - !전적에서 slash commands로 변경
