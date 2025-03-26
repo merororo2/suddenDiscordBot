@@ -18,7 +18,7 @@ client.once(Events.ClientReady, (readyClient) => {
   console.log(`✅ Logged in as ${readyClient.user.tag}`);
 });
 
-async function fetchSuddenAttackStats(suddenName) {
+async function fetchSuddenAttackStats(suddenName, gameMode) {
   try {
     const urlString = `https://open.api.nexon.com/suddenattack/v1/id?user_name=${encodeURIComponent(
       suddenName
@@ -35,8 +35,9 @@ async function fetchSuddenAttackStats(suddenName) {
 
     const ouid = data.ouid;
     console.log(`✅ ${suddenName}의 OUID:`, ouid);
+    console.log(`✅ ${suddenName}의 Mode:`, gameMode);
 
-    // 여러 API 호출 (basic, rank, recent-info, match)
+    // 여러 API 호출 (basic, rank, recent-info, match, tier)
     const endpoints = [
       {
         name: "기본 정보",
@@ -49,17 +50,17 @@ async function fetchSuddenAttackStats(suddenName) {
         url: `https://open.api.nexon.com/suddenattack/v1/user/rank?ouid=${ouid}`,
       },
       {
-        name: "최근 동향",
+        name: "최근 전적",
         key: "recent",
         url: `https://open.api.nexon.com/suddenattack/v1/user/recent-info?ouid=${ouid}`,
       },
-      // {
-      //   name: "매치 정보",
-      //   key: "match",
-      //   url: `https://open.api.nexon.com/suddenattack/v1/match?ouid=${ouid}&match_mode=${encodeURIComponent(
-      //     gameMode
-      //   )}`,
-      // },
+      {
+        name: "매치 정보",
+        key: "match",
+        url: `https://open.api.nexon.com/suddenattack/v1/match?ouid=${ouid}&match_mode=${encodeURIComponent(
+          gameMode
+        )}`,
+      },
       {
         name: "티어 정보",
         key: "tier",
@@ -88,71 +89,62 @@ async function fetchSuddenAttackStats(suddenName) {
     const tier = results.tier || {};
     const match =
       results.match && results.match.match && results.match.match.length > 0
-        ? results.match.match[0]
+        ? results.match.match
         : null;
 
     const embed = new EmbedBuilder()
       .setColor("#ff6600")
       .setTitle(`⚡ **${suddenName}의 전적 정보** ⚡`)
-      .setThumbnail(
-        "https://i.namu.wiki/i/1mH8Ae0cQRPdbxclfEKND_8aa6kpn86MSBYiJK7_Coh362VMvgbgyDCSm8H2raru-33_SnZ0xa6oK-tMbnQT3g.webp"
+      .setThumbnail("https://example.com/avatar.png")
+      .setDescription(
+        `클랜: ${basic.clan_name || "N/A"}\n\n` +
+          `솔랭티어: ${
+            tier.solo_rank_match_tier === "UNRANK"
+              ? "배치전"
+              : tier.solo_rank_match_score && tier.solo_rank_match_score !== 0
+              ? tier.solo_rank_match_score + "점"
+              : "배치전"
+          }\n\n` +
+          `파랭티어: ${
+            tier.party_rank_match_tier === "UNRANK"
+              ? "배치전"
+              : tier.party_rank_match_score && tier.party_rank_match_score !== 0
+              ? tier.party_rank_match_score + "점"
+              : "배치전"
+          }\n\n` +
+          `시즌계급: ${rank.season_grade || "N/A"}\n\n` +
+          `시즌계급랭킹: ${
+            rank.season_grade_ranking ? rank.season_grade_ranking + "위" : "N/A"
+          }\n\n` +
+          `매너등급: ${basic.manner_grade || "N/A"}\n\n`
       )
-      .setDescription(`**게임 모드**: 개발중 | **닉네임**: ${suddenName}`)
-      .addFields(
-        {
-          name: "📌 **기본 정보**",
-          value:
-            `닉네임: ${basic.user_name || "N/A"}\n` +
-            `소속 클랜: ${basic.clan_name || "N/A"}\n` +
-            `매너 등급: ${basic.manner_grade || "N/A"}`,
-          inline: true,
-        },
-        {
-          name: "🏅 **티어 정보**",
-          value:
-            `솔로 랭크 티어: ${tier.solo_rank_match_tier || "UNRANK"}\n` +
-            `솔로 랭크 점수: ${tier.solo_rank_match_score || "N/A"}\n` +
-            `파티 랭크 티어: ${tier.party_rank_match_tier || "UNRANK"}\n` +
-            `파티 랭크 점수: ${tier.party_rank_match_score || "N/A"}`,
-          inline: true,
-        },
-        {
-          name: "🏆 **계급 정보**",
-          value:
-            `통합 계급: ${rank.grade || "N/A"}\n` +
-            `통합 계급 랭킹: ${rank.grade_ranking + "위" || "N/A"}\n` +
-            `시즌 계급: ${rank.season_grade || "N/A"}\n` +
-            `시즌 계급 랭킹: ${rank.season_grade_ranking + "위" || "N/A"}`,
-          inline: true,
-        },
-        {
-          name: "🕹 **최근 동향**",
-          value:
-            `최근 승률: ${recent.recent_win_rate || "0"}%\n` +
-            `최근 킬데스: ${
-              recent.recent_kill_death_rate
-                ? recent.recent_kill_death_rate.toFixed(1) + "%"
-                : "N/A"
-            }\n` +
-            `최근 돌격소총 킬데스: ${
-              recent.recent_assault_rate
-                ? recent.recent_assault_rate.toFixed(1) + "%"
-                : "N/A"
-            }\n` +
-            `최근 저격소총 킬데스: ${
-              recent.recent_sniper_rate
-                ? recent.recent_sniper_rate.toFixed(1) + "%"
-                : "N/A"
-            }\n` +
-            `최근 특수총 킬데스: ${
-              recent.recent_special_rate
-                ? recent.recent_special_rate.toFixed(1) + "%"
-                : "N/A"
-            }%`,
 
-          inline: true,
-        }
-      )
+      .addFields({
+        name: "🕹 **최근 동향**",
+        value:
+          `최근 승률: ${recent.recent_win_rate || "0"}%\n` +
+          `최근 킬데스: ${
+            recent.recent_kill_death_rate
+              ? recent.recent_kill_death_rate.toFixed(1) + "%"
+              : "N/A"
+          }\n` +
+          `최근 돌격소총 킬데스: ${
+            recent.recent_assault_rate
+              ? recent.recent_assault_rate.toFixed(1) + "%"
+              : "N/A"
+          }\n` +
+          `최근 저격소총 킬데스: ${
+            recent.recent_sniper_rate
+              ? recent.recent_sniper_rate.toFixed(1) + "%"
+              : "N/A"
+          }\n` +
+          `최근 특수총 킬데스: ${
+            recent.recent_special_rate
+              ? recent.recent_special_rate.toFixed(1) + "%"
+              : "N/A"
+          }%`,
+        inline: true,
+      })
       .setFooter({
         text: "Sudden Attack Stats 🔥",
       })
@@ -172,14 +164,15 @@ client.on("messageCreate", async (message) => {
   if (message.content.startsWith("!전적 ")) {
     const args = message.content.split(" ");
     if (args.length < 2) {
-      return message.reply("⚠️ 사용법: `!전적 닉네임`");
+      return message.reply("⚠️ 사용법: `!전적 닉네임 [게임모드]`");
     }
 
     const suddenName = args[1]; // 닉네임
-    // const gameMode = args[2] || "폭파미션"; // 기본값: 폭파미션
+    const gameMode = args[2] || "폭파미션"; // 기본값: 폭파미션
     message.reply(`⏳ **${suddenName}**의 전적을 조회하는 중...`);
 
-    const result = await fetchSuddenAttackStats(suddenName);
+    const result = await fetchSuddenAttackStats(suddenName, gameMode);
+
     message.reply(result);
   }
 });
