@@ -92,6 +92,15 @@ async function fetchSuddenAttackStats(suddenName, gameMode) {
         ? results.match.match
         : null;
 
+    //프로그래스바
+    function generateProgressBar(value) {
+      if (value === undefined || value === null) return "-".repeat(10); // handle null or undefined values
+      const percent = Math.min(100, Math.max(0, value)); // ensure percentage is between 0 and 100
+      const barLength = 10;
+      const filledLength = Math.round((barLength * percent) / 100);
+      return "█".repeat(filledLength) + "-".repeat(barLength - filledLength);
+    }
+
     const embed = new EmbedBuilder()
       .setColor("#ff6600")
       .setTitle(`⚡ **${suddenName}의 전적 정보** ⚡`)
@@ -122,29 +131,40 @@ async function fetchSuddenAttackStats(suddenName, gameMode) {
       .addFields({
         name: "🕹 **최근 동향**",
         value:
-          `최근 승률: ${recent.recent_win_rate || "0"}%\n` +
-          `최근 킬데스: ${
+          `최근 승률: [${generateProgressBar(recent.recent_win_rate)}] ${
+            recent.recent_win_rate || "0"
+          }%\n` +
+          `최근 킬데스: [${generateProgressBar(
+            recent.recent_kill_death_rate
+          )}] ${
             recent.recent_kill_death_rate
               ? recent.recent_kill_death_rate.toFixed(1) + "%"
               : "N/A"
           }\n` +
-          `최근 돌격소총 킬데스: ${
+          `최근 돌격소총 킬데스: [${generateProgressBar(
+            recent.recent_assault_rate
+          )}] ${
             recent.recent_assault_rate
               ? recent.recent_assault_rate.toFixed(1) + "%"
               : "N/A"
           }\n` +
-          `최근 저격소총 킬데스: ${
+          `최근 저격소총 킬데스: [${generateProgressBar(
+            recent.recent_sniper_rate
+          )}] ${
             recent.recent_sniper_rate
               ? recent.recent_sniper_rate.toFixed(1) + "%"
               : "N/A"
           }\n` +
-          `최근 특수총 킬데스: ${
+          `최근 특수총 킬데스: [${generateProgressBar(
+            recent.recent_special_rate
+          )}] ${
             recent.recent_special_rate
               ? recent.recent_special_rate.toFixed(1) + "%"
               : "N/A"
-          }%`,
+          }`,
         inline: true,
       })
+
       .setFooter({
         text: "Sudden Attack Stats 🔥",
       })
