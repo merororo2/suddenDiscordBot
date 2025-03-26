@@ -3,6 +3,7 @@ const {
   Events,
   GatewayIntentBits,
   EmbedBuilder,
+  SlashCommandBuilder,
 } = require("discord.js");
 const { token, suddenToken } = require("./config.json");
 
@@ -16,6 +17,27 @@ const client = new Client({
 
 client.once(Events.ClientReady, (readyClient) => {
   console.log(`✅ Logged in as ${readyClient.user.tag}`);
+});
+
+client.on(Events.ClientReady, async () => {
+  await client.application.commands.create(
+    new SlashCommandBuilder()
+      .setName("전적")
+      .setDescription("Sudden Attack 전적을 조회합니다.")
+      .addStringOption((option) =>
+        option
+          .setName("닉네임")
+          .setDescription("조회할 닉네임을 입력하세요.")
+          .setRequired(true)
+      )
+      .addStringOption(
+        (option) =>
+          option
+            .setName("게임모드")
+            .setDescription("게임 모드를 선택하세요.")
+            .setRequired(false) // 선택사항으로 설정
+      )
+  );
 });
 
 async function fetchSuddenAttackStats(suddenName, gameMode) {
@@ -178,22 +200,20 @@ async function fetchSuddenAttackStats(suddenName, gameMode) {
 }
 
 // 디스코드 봇 명령어 감지
-client.on("messageCreate", async (message) => {
-  if (message.author.bot) return; // 봇이 보낸 메시지는 무시
+client.on(Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isCommand()) return;
 
-  if (message.content.startsWith("!전적 ")) {
-    const args = message.content.split(" ");
-    if (args.length < 2) {
-      return message.reply("⚠️ 사용법: `!전적 닉네임 [게임모드]`");
-    }
+  const { commandName } = interaction;
 
-    const suddenName = args[1]; // 닉네임
-    const gameMode = args[2] || "폭파미션"; // 기본값: 폭파미션
-    message.reply(`⏳ **${suddenName}**의 전적을 조회하는 중...`);
+  if (commandName === "전적") {
+    const nickname = interaction.options.getString("닉네임");
+    const gameMode = interaction.options.getString("게임모드") || "폭파미션"; // 기본값은 폭파미션
 
-    const result = await fetchSuddenAttackStats(suddenName, gameMode);
+    await interaction.reply(`⏳ **${nickname}**의 전적을 조회하는 중...`);
 
-    message.reply(result);
+    const result = await fetchSuddenAttackStats(nickname, gameMode);
+
+    await interaction.editReply(result); // 결과를 수정하여 응답
   }
 });
 
