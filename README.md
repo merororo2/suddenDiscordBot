@@ -25,8 +25,11 @@
    **[수정후 출력 이미지]**
      ![슬래시1](https://github.com/user-attachments/assets/09e55654-a02f-4d3d-813e-a4ec239e8680)
      ![슬래시2](https://github.com/user-attachments/assets/e5a2c6a3-98d2-410c-9035-4094ea53bae9)
+   
      > slash command로 변경 후 /전적으로 검색합니다
+      
      ![슬래시3](https://github.com/user-attachments/assets/ad584349-7d3b-4cf2-9141-8513a05bd82d)
+   
      > 전적정보 간략화 및 최근동향 prograss bar로 수정
 ## 🔧 설치
 
